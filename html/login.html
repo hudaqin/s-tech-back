@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>S-TECH 圣泰克 后台管理系统</title>
+		<script src="" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/style.css">
+	</head>
+
+	<body>
+		<div id="container">
+			<div></div>
+			<div class="admin-login-background">
+				<!--<div class="admin-header">-->
+				<!--<img src="image/ex_logo.png" class="admin-logo">-->
+				<!--</div>-->
+				<form class="layui-form" action="">
+					<div>
+						<i class="layui-icon layui-icon-username admin-icon admin-icon-username"></i>
+						<input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input admin-input admin-input-username">
+					</div>
+					<div>
+						<i class="layui-icon layui-icon-password admin-icon admin-icon-password"></i>
+						<input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input admin-input">
+					</div>
+					<!--<div>
+                <input type="text" name="verify"
+                       placeholder="请输入验证码"
+                       autocomplete="off"
+                       class="layui-input admin-input admin-input-verify">
+                <img class="admin-captcha" src=""
+                     onclick="updateVerify()">
+            </div>-->
+					<a class="layui-btn admin-button" lay-submit lay-filter="formDemo" id="login_button" onclick="login();">登陆</a>
+
+				</form>
+			</div>
+		</div>
+		<script src="../layui/layui.js"></script>
+		<script>
+			$(document).keyup(function(event) {
+				if(event.keyCode == 13) {
+					$("#login_button").trigger("click");
+				}
+			})
+
+//			function updateVerify() {
+//
+//			}
+
+			function login() {
+				var userName = document.getElementsByName("username")[0].value;
+				var userPassword = document.getElementsByName("password")[0].value;
+				$.ajax({
+					type: "post",
+					url: baseIP + "/login",
+					async: false,
+					data: {
+						"name": userName,
+						"pwd": userPassword
+					},
+					dataType: "json",
+					success: function(data) {
+						console.log(data);
+						if(data.code == 0) {
+							sessionStorage.setItem("login_token",data.token);
+							sessionStorage.setItem("user_name",data.name);
+							window.location.href = "index.html";
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

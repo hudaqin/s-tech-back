@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>S-TECH 圣泰克 后台管理系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="../layui/css/layui.css" media="all">
+	</head>
+
+	<body>
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="addProduct"><i class="layui-icon">&#xe608;</i> 添加产品</button>
+			</div>
+		</script>
+		<table class="layui-hide" id="product_list" lay-filter="demo"></table>
+		<script type="text/html" id="zizeng">
+		    {{d.LAY_TABLE_INDEX+1}}
+		</script>
+		<script type="text/html" id="barDemo">
+			<!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+		<script src="../layui/layui.js" charset="utf-8"></script>
+
+	</body>
+	<!--编辑产品信息-->
+	<div id="product_edit" style="display:none;">
+		<form class="layui-form" action="">
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品名称</label>
+				<div class="layui-input-block">
+					<input type="text" name="product_name_edit" id="product_name_edit" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品图片</label>
+				<div class="layui-input-block">
+					<input type="text" id="product_img_edit_src" name="product_img" readonly autocomplete="off" class="layui-input">
+					<img  style="width: 200px;height: 200px;"  src="" />
+					<button type="button" class="layui-btn " id="upload_img_edit">
+					  <i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品型号</label>
+				<div class="layui-input-block">
+					<input type="text" name="product_model_edit" id="product_model_edit" required lay-verify="required" placeholder="请输入产品型号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品描述</label>
+				<div class="layui-input-block">
+					<textarea name="product_describe_edit" id="product_describe_edit" required lay-verify="required" placeholder="请输入产品描述" class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" id="showHome_edit">首页展示</label>
+				<div class="layui-input-block">
+			     	 <input type="radio" name="showHome" value="1" title="是" checked>
+					<input type="radio" name="showHome" value="0" title="否" >
+			    </div>
+			</div>
+		</form>
+	</div>
+	<!--查看产品信息-->
+	<div id="product_detail" style="display:none;">
+		<form class="layui-form" action="">
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品名称</label>
+				<div class="layui-input-block">
+					<input type="text" id="product_name_detail" name="product_name" readonly autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品图片</label>
+				<div class="layui-input-block">
+					<input type="text" id="product_img_detail_src" name="product_img" readonly autocomplete="off" class="layui-input">
+					<img id="product_img_detail" style="width: 200px;height: 200px;" src="" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品型号</label>
+				<div class="layui-input-block">
+					<input type="text" id="product_model_detail" name="product_model" readonly autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品描述</label>
+				<div class="layui-input-block">
+					<textarea id="product_describe_detail" name="product_describe" readonly class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">首页展示</label>
+				<div class="layui-input-block">
+			     	 <input type="radio" name="showHome" value="1" title="是" checked>
+					<input type="radio" name="showHome" value="0" title="否" >
+			    </div>
+			</div>
+		</form>
+	</div>
+	<!--添加产品信息-->
+	<div id="product_add" style="display:none;">
+		<form class="layui-form" action="">
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品名称</label>
+				<div class="layui-input-block">
+					<input type="text" name="title" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品图片</label>
+				<div class="layui-input-block">
+					<input type="text" id="product_img_add_src" required lay-verify="required" readonly placeholder="请输入产品图片地址" name="product_img" autocomplete="off" class="layui-input">
+					<img style="width: 200px;height: 200px;" src="" />
+					<button type="button" class="layui-btn " id="upload_img_add">
+					  <i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品型号</label>
+				<div class="layui-input-block">
+					<input type="text" name="title" required lay-verify="required" placeholder="请输入产品型号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">产品描述</label>
+				<div class="layui-input-block">
+					<textarea name="" required lay-verify="required" placeholder="请输入产品描述" class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">首页展示</label>
+				<div class="layui-input-block">
+			     	 <input type="radio" name="showHome" value="1" title="是" checked>
+					<input type="radio" name="showHome" value="0" title="否" >
+			    </div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<button class="layui-btn layui-btn-sm" id="add_item">
+					    <i class="layui-icon">&#xe654;</i>
+					</button>
+				</label>
+			</div>
+		</form>
+	</div>
+
+	<script>
+		//分页参数设置 这些全局变量关系到分页的功能
+		//var startAllAppoint = 0;//开始页数    这个可以省略
+		var pageSize = 10; //每页显示数据条数
+		var currentPageNo = 1; //当前页数
+		var dataLength = 0; //数据总条数
+		//分页控件
+		layui.use(['laydate', 'layer', 'table', 'carousel', 'upload', 'element'], function() {
+			var laypage = layui.laypage, //分页
+				$ = layui.jquery,
+				upload = layui.upload,
+				layer = layui.layer, //弹层
+				table = layui.table, //表格
+				element = layui.element; //元素操作
+			var index; //关闭layui弹窗的时候使用的索引
+			
+			
+			currentPageNo = $(".layui-laypage-curr").next("em").next("em").val();
+			$(function(){
+//				$("button").click(function(){
+					
+//					console.log($(event.currentTarget).html())
+//				})
+			})
+			//执行一个 table 实例
+			table.render({
+				elem: '#product_list',
+				//					height: 532,
+				//				url: '../json/product.json', //					这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
+				url: baseIP + '/manage/product/list', //					这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
+				//				method: 'get', //laui 修改请求方式
+				method: 'POST', //laui 修改请求方式
+				where: {
+					"token": sessionStorage.getItem("login_token"),
+					"page": currentPageNo, //页码的参数名称，默认：page
+					"limit": pageSize //每页数据量的参数名，默认：limit
+				},
+				response: {
+					statusName: 'code', //数据状态的字段名称，默认：code
+					countName: 'totalCount', //数据总数的字段名称，默认：count
+					dataName: 'pageList' //默数据列表的字段名称，认：data        //我返回的datas集合 
+				},
+				page: true, //开启分页
+				limits: [10],
+				limit: 10,
+				toolbar: '#toolbarDemo',
+				cols: [
+					[ //表头
+						{
+							field: 'id',
+							//											width: 200,
+							title: '序号',
+							sort: true,
+							templet:'#zizeng'
+						}, {
+							field: 'name',
+							//											width: 200,
+							title: '产品名称'
+						}, {
+							field: 'img',
+							//											width: 200,
+							title: '产品图片链接',
+							//								sort: true
+							width: 200,
+							height: 200,
+							templet: '<div><img src="{{ d.img}}"></div>'
+						}, {
+							field: 'model',
+							//											width: 200,
+							title: '产品型号'
+						}, {
+							field: 'desc',
+							title: '产品描述',
+							//											minWidth: 150
+						}, {
+							field: 'createTime',
+							//											width: 80,
+							title: '创建时间',
+							sort: true
+						}, {
+							fixed: 'right',
+							width: 165,
+							align: 'center',
+							toolbar: '#barDemo'
+						}
+					]
+				]
+			});
+			//监听行工具事件
+			table.on('tool(demo)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+				var data = obj.data, //获得当前行数据
+					layEvent = obj.event; //获得 lay-event 对应的值
+				if(layEvent === 'detail') {
+					openProductDetail(data);
+				} else if(layEvent === 'del') {
+					//					layer.msg(data.id);
+					layer.confirm('真的删除行么', function(index) {
+						delProduct(data.id);
+					});
+				} else if(layEvent === 'edit') {
+					editProduct(data.id);
+				}
+			});
+			//头工具栏事件
+			table.on('toolbar(demo)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+				//				var data = obj.data, //获得当前行数据
+				layEvent = obj.event; //获得 lay-event 对应的值
+				if(layEvent === 'addProduct') {
+					addProduct();
+				}
+			});
+
+			//查看产品信息
+			function openProductDetail(product) {
+				console.log(product);
+				index = layer.open({
+					type: 1,
+					title: "查看产品信息",
+					area: ['800px', '500px'], //弹框大小
+					offset: 't', //垂直水平居中
+					content: $("#product_detail"), //这里content是form表单
+					btn: ['取消'], //可以无限个按钮
+					yes: function(index, layero) {
+						//按钮【按钮一】的回调
+						layuiClose();
+					},
+					success: function(layero, index) {
+						$.ajax({
+							type: "get",
+							url: baseIP + "/manage/product/detail",
+							//							url: "../json/productDetail.json",
+							async: true,
+							data: {
+								"id": product.id
+							},
+							dataType: "json",
+							success: function(data) {
+								console.log(data);
+								$("#product_name_detail").val(data.product.name);
+								$("#product_img_detail").attr("src", data.product.img);
+								$("#product_img_detail_src").val(data.product.img);
+								$("#product_model_detail").val(data.product.model);
+								$("#product_describe_detail").val(data.product.desc);
+								$("#product_describe_detail").val(data.product.desc);
+								$("#product_detail >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+								$.each(data.product.details, function(i, item) {
+									$("#product_detail >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" value="' + item.functionName + '"  readonly autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea  readonly  class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
+								});
+							}
+						});
+					}
+				});
+			}
+
+			//删除产品信息
+			function delProduct(id) {
+				$.ajax({
+					type: "delete",
+					url: baseIP + "/manage/product",
+					async: false,
+					data: {
+						"id": id
+					},
+					dataType: "json",
+					success: function(data) {
+						if(data.code == 0) {
+							layer.msg('删除成功');
+							reloadTable();
+						} else {
+							layer.msg('删除失败');
+						}
+					}
+				});
+			}
+			//编辑产品信息
+			function editProduct(id) {
+				layer.open({
+					type: 1,
+					title: "查看产品信息",
+					area: ['800px', '500px'], //弹框大小
+					offset: 't', //垂直水平居中
+					content: $("#product_edit"), //这里content是form表单
+					btn: ['保存', '取消'], //可以无限个按钮
+					yes: function(index, layero) {
+						//按钮【按钮一】的回调
+						saveProduct(id);
+					},
+					btn2: function(index, layero) {
+						//按钮【按钮二】的回调
+						layuiClose();
+					},
+					success: function(layero, index) {
+						$.ajax({
+							type: "post",
+							url: baseIP + "/manage/product/detail",
+							//							url: "../json/productDetail.json",
+							async: false,
+							data: {
+								"id": id
+							},
+							dataType: "json",
+							success: function(data) {
+								console.log(data);
+								$("#product_name_edit").val(data.product.name);
+								$("#upload_img_edit").prev("img").attr("src", data.product.img);
+								$("#product_img_edit_src").val(data.product.img);
+								$("#product_model_edit").val(data.product.model);
+								$("#product_describe_edit").text(data.product.desc);
+								
+								$(document.getElementsByName("showHome_edit")).each(function(i,item){
+									console.log($(item).val())
+									console.log(item)
+									if($(item).val()==data.product.showHome){
+										$(item).attr("checked","checked")
+									}
+								})
+								$("#product_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+								$.each(data.product.details, function(i, item) {
+									$("#product_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
+								});
+								$("#product_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+							}
+						});
+					}
+				});
+			}
+
+			//添加产品信息
+			function addProduct() {
+				layer.open({
+					type: 1,
+					title: "查看产品信息",
+					area: ['800px', '500px'], //弹框大小
+					offset: 't', //垂直水平居中
+					content: $("#product_add"), //这里content是form表单
+					btn: ['保存', '取消'], //可以无限个按钮
+					yes: function(index, layero) {
+						//按钮【按钮一】的回调
+						saveNewProduct();
+					},
+					btn2: function(index, layero) {
+						//按钮【按钮二】的回调
+						layuiClose();
+					},
+					success: function(layero, index) {
+						$("#product_add >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+						$("#product_add >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label" ><button class="layui-btn layui-btn-sm" id="add_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+					}
+				});
+			}
+			//保存修改产品信息
+			function saveProduct(id) {
+				var productInput = $("#product_edit >.layui-form >.layui-form-item input");
+				var productTextarea = $("#product_edit >.layui-form >.layui-form-item textarea");
+				var productObject = new Object();
+				//产品id
+				productObject.id = id;
+				//产品名称
+				productObject.name = productInput[0].value;
+				//产品图片ID
+				productObject.fileId = productInput[1].getAttribute("file-id");
+				//产品图片
+				productObject.img = productInput[1].value;
+				//产品型号
+				productObject.model = productInput[3].value;
+				//产品描述
+				productObject.desc = productTextarea[0].value;
+				//是否首页展示	layui-form-radioed
+				productObject.showHome = $("#product_add .layui-form-item .layui-form-radioed").prev("input").val();
+				var productArray = new Array();
+				for(var i = 0; i < productTextarea.length - 1; i++) {
+					var productItem = new Object();
+					//产品功能Id
+					productItem.id = productInput[i + 6].getAttribute("function-id");
+					//产品功能
+					productItem.functionName = productInput[i + 6].value;
+					//功能描述
+					productItem.functionDesc = productTextarea[i + 1].value;
+					productArray.push(productItem);
+				}
+				//产品功能列表
+				productObject.details = productArray;
+				console.log(JSON.stringify(productObject))
+				$.ajax({
+					type: "post",
+					url: baseIP + "/manage/product/edit",
+					data: JSON.stringify(productObject),
+					dataType: "JSON",
+					contentType:"application/json",
+					async: true,
+					success: function(data) {
+						if(data.code == 0) {
+							layer.msg('修改产品成功');
+							reloadTable();
+						} else {
+							layer.msg('修改产品失败');
+						}
+					}
+				});
+			}
+
+			//保存新添加的产品信息
+			function saveNewProduct() {
+				var productInput = $("#product_add >.layui-form >.layui-form-item input");
+				var productTextarea = $("#product_add >.layui-form >.layui-form-item textarea");
+				var productObject = new Object();
+				//产品名称
+				productObject.name = productInput[0].value;
+				//产品图片id
+				productObject.fileId = productInput[1].getAttribute("file-id");
+				//产品图片
+				productObject.img = productInput[1].value;
+				//产品型号
+				productObject.model = productInput[3].value;
+				//产品描述
+				productObject.desc = productTextarea[0].value;
+				//是否首页展示	layui-form-radioed
+				productObject.showHome = $("#product_add .layui-form-item .layui-form-radioed").prev("input").val();
+				var productArray = new Array();
+				for(var i = 0; i < productTextarea.length - 1; i++) {
+					var productItem = new Object();
+					//产品功能
+					productItem.functionName = productInput[i + 6].value;
+					//功能描述
+					productItem.functionDesc = productTextarea[i + 1].value;
+					productArray.push(productItem);
+				}
+				//产品功能列表
+				productObject.details = productArray;
+				console.log(JSON.stringify(productObject))
+				$.ajax({
+					type: "post",
+					url: baseIP + "/manage/product/add",
+					data: JSON.stringify(productObject),
+					contentType:"application/json",
+					dataType: "JSON",
+					async: true,
+					success: function(data) {
+						if(data.code == 0) {
+							layer.msg('添加产品成功');
+							reloadTable();
+//							window.reload();
+						} else {
+							layer.msg('添加产品失败');
+						}
+					}
+				});
+			}
+
+			//删除产品功能节点
+//			$(document).on('click', '#sub_item', function() {
+////				$(event.currentTarget).parent("button").parent(".layui-form-label").parent(".layui-form-item").remove();
+////				$(event.currentTarget).parent("button").parent(".layui-form-label").parent(".layui-form-item").next(".layui-form-item").remove();
+////				$(event.currentTarget).parent("button").parent(".layui-form-label").parent(".layui-form-item").next(".layui-form-item").next(".layui-form-item").remove();
+//			});
+			//添加产品功能节点
+			$(document).on('click', '#add_item', function() {
+				$("#product_add >.layui-form >.layui-form-item >.layui-form-label> .layui-btn").parents(".layui-form-item").remove();
+//				<div class="layui-form-item"><label class="layui-form-label" ><button class="layui-btn layui-btn-sm" id="sub_item" ><i class="layui-icon">--</i></button></label></div>
+				$("#product_add >.layui-form").append('<div class="layui-form-item"><div class="layui-form-item"></div><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea"></textarea></div></div><div class="layui-form-item"><label class="layui-form-label" ><button class="layui-btn layui-btn-sm" id="add_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+			});
+			//编辑产品添加功能节点
+			$(document).on('click', '#edit_item', function() {
+				$("#product_edit >.layui-form >.layui-form-item >.layui-form-label> .layui-btn").parents(".layui-form-item").remove();
+				$("#product_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea"></textarea></div></div><div class="layui-form-item"><label class="layui-form-label" ><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+			});
+
+			//关闭layui弹窗
+			function layuiClose() {
+				layer.close(index);
+			}
+			
+			//执行实例	添加
+			var uploadInst = upload.render({
+			    elem: '#upload_img_add', //绑定元素
+			    url: baseIP + '/manage/upload', //上传接口
+				done: function(res){
+				  	//上传完毕回调
+				  	console.log(res);
+				  	var img_id = res.tempFile.id;
+				  	var img_src = res.tempFile.filePath;
+				  	$("#upload_img_add").prev("img").attr("src",img_src);
+				  	$("#upload_img_add").prev().prev("input").val(img_src);
+				  	$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+				},
+				error: function(e){
+			  		//请求异常回调
+			  		console.log(e);
+			    }
+			});
+			//执行实例	编辑
+			var uploadInst = upload.render({
+			    elem: '#upload_img_edit', //绑定元素
+			    url: baseIP + '/manage/upload', //上传接口
+				done: function(res){
+				  	//上传完毕回调
+				  	console.log(res);
+				  	var img_id = res.tempFile.id;
+				  	var img_src = res.tempFile.filePath;
+				  	$("#upload_img_add").prev("img").attr("src",img_src);
+				  	$("#upload_img_edit").prev().prev("input").val(img_src);
+				  	$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+				},
+				error: function(e){
+			  		//请求异常回调
+			  		console.log(e);
+			    }
+			});
+			
+			
+			//刷新表单
+			function reloadTable(){
+				window.location.reload();
+			}
+
+		});
+	</script>
+
+</html>
