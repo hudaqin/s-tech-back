@@ -64,7 +64,7 @@
 			<label class="layui-form-label">视频图片</label>
 			<div class="layui-input-block">
 				<input type="text" id="video_img_add_src" name="video_img" readonly autocomplete="off" class="layui-input">
-				<!--<img  style="width: 200px;height: 200px;"  src="" />-->
+				<img  style="width: 200px;height: 200px;"  src="" hidden="hidden"/>
 				<button type="button" class="layui-btn " id="upload_img_add">
 					<i class="layui-icon">&#xe67c;</i>上传视频文件
 				</button>
@@ -207,11 +207,11 @@
 							$("#video_img_edit_src").val(data.video.url);
 							$("#video_content_edit").text(data.video.content);
 
-							$("#video_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
-							$.each(data.video.details, function(i, item) {
-								$("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
-							});
-							$("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+							// $("#video_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+							// $.each(data.video.details, function(i, item) {
+							// 	$("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
+							// });
+							// $("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
 						}
 					});
 				}

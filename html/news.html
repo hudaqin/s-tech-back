@@ -228,11 +228,11 @@
                                 $("#news_img_edit_src").val(data.news.img);
                                 $("#news_content_edit").text(data.news.content);
 
-                                $("#news_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
-                                $.each(data.news.details, function(i, item) {
-                                    $("#news_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
-                                });
-                                $("#news_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+                                // $("#news_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+                                // $.each(data.news.details, function(i, item) {
+                                //     $("#news_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
+                                // });
+                                // $("#news_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
                             }
                         });
                     }
