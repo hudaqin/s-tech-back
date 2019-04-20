@@ -1,118 +1,379 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<title>S-TECH 圣泰克 后台管理系统</title>
-		<meta name="renderer" content="webkit">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
-		<link rel="stylesheet" href="../layui/css/layui.css" media="all">
-		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
-	</head>
+<head>
+	<meta charset="utf-8">
+	<title>S-TECH 圣泰克 后台管理系统</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../layui/css/layui.css" media="all">
+	<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
 
-	<body>
-		<button class="layui-btn">
-		  	<i class="layui-icon">&#xe608;</i> 添加视频
-		</button>
-		<table class="layui-hide" id="product_list" lay-filter="demo"></table>
-		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-		</script>
-		<script src="../layui/layui.js" charset="utf-8"></script>
-		<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<body>
+<script type="text/html" id="zizeng">
+	{{d.LAY_TABLE_INDEX+1}}
+</script>
 
-		<script>
-			//分页参数设置 这些全局变量关系到分页的功能
-			//var startAllAppoint = 0;//开始页数    这个可以省略
-			var pageSize = 8; //每页显示数据条数
-			var currentPageNo = 1; //当前页数
-			var dataLength = 0; //数据总条数
-			//分页控件
-			layui.use(['laydate', 'layer', 'table', 'carousel', 'upload', 'element'], function() {
-				var laypage = layui.laypage, //分页
-					layer = layui.layer, //弹层
-					table = layui.table, //表格
-					element = layui.element; //元素操作
-				//执行一个 table 实例
-				table.render({
-					elem: '#product_list',
-					//					height: 532,
-					url: baseIP + '/manage/product/list', //					这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
-					method: 'POST', //laui 修改请求方式
-					where: {
-						"token": sessionStorage.getItem("login_token"),
-						"page": currentPageNo, //页码的参数名称，默认：page
-						"limit": pageSize //每页数据量的参数名，默认：limit
-					},
-					response: {
-						statusName: 'code', //数据状态的字段名称，默认：code
-						countName: 'totalCount', //数据总数的字段名称，默认：count
-						dataName: 'pageList' //默数据列表的字段名称，认：data        //我返回的datas集合 
-					},
-					page: true, //开启分页
-					limits: [10, 15, 20, 25],
-					limit: 10,
-					cols: [
-						[ //表头
-							{
-								field: 'id',
-								//											width: 200,
-								title: 'ID',
-								sort: true
-							}, {
-								field: 'name',
-								//											width: 200,
-								title: '产品名称'
-							}, {
-								field: 'img',
-								//											width: 200,
-								title: '产品图片链接',
-								sort: true
-							}, {
-								field: 'model',
-								//											width: 200,
-								title: '产品型号'
-							}, {
-								field: 'desc',
-								title: '产品描述',
-								//											minWidth: 150
-							}, {
-								field: 'createTime',
-								//											width: 80,
-								title: '创建时间',
-								sort: true
-							}, {
-								fixed: 'right',
-								width: 165,
-								align: 'center',
-								toolbar: '#barDemo'
-							}
-						]
-					]
+<script type="text/html" id="toolbarDemo">
+	<div class="layui-btn-container">
+		<button class="layui-btn layui-btn-sm" lay-event="addVideo"><i class="layui-icon">&#xe608;</i> 添加视频</button>
+	</div>
+</script>
+<table class="layui-hide" id="video_list" lay-filter="demo"></table>
+<script type="text/html" id="barDemo">
+	<!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="../layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+<div id="video_edit" style="display:none;">
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">视频标题</label>
+			<div class="layui-input-block">
+				<input type="text" name="video_title_edit" id="video_title_edit" required lay-verify="required" placeholder="请输入视频标题" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">视频文件</label>
+			<div class="layui-input-block">
+				<input type="text" id="video_img_edit_src" name="video_img" readonly autocomplete="off" class="layui-input">
+				<!--<img  style="width: 200px;height: 200px;"  src="" />-->
+				<button type="button" class="layui-btn " id="upload_img_edit">
+					<i class="layui-icon">&#xe67c;</i>上传视频文件
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div id="video_add" style="display:none;">
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">视频标题</label>
+			<div class="layui-input-block">
+				<input type="text" name="video_title_edit" id="video_title_add" required lay-verify="required" placeholder="请输入视频标题" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">视频图片</label>
+			<div class="layui-input-block">
+				<input type="text" id="video_img_add_src" name="video_img" readonly autocomplete="off" class="layui-input">
+				<!--<img  style="width: 200px;height: 200px;"  src="" />-->
+				<button type="button" class="layui-btn " id="upload_img_add">
+					<i class="layui-icon">&#xe67c;</i>上传视频文件
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+</body>
+
+<script>
+	//分页参数设置 这些全局变量关系到分页的功能
+	//var startAllAppoint = 0;//开始页数    这个可以省略
+	var pageSize = 10; //每页显示数据条数
+	var currentPageNo = 1; //当前页数
+	var dataLength = 0; //数据总条数
+	//分页控件
+	layui.use(['laydate', 'layer', 'table', 'carousel', 'upload', 'element'], function() {
+		var laypage = layui.laypage, //分页
+				$ = layui.jquery,
+				upload = layui.upload,
+				layer = layui.layer, //弹层
+				table = layui.table, //表格
+				element = layui.element; //元素操作
+
+		var index; //关闭layui弹窗的时候使用的索引
+
+
+		currentPageNo = $(".layui-laypage-curr").next("em").next("em").val();
+		//执行一个 table 实例
+		table.render({
+			elem: '#video_list',
+			//					height: 532,
+			url: baseIP + '/manage/video/list', //					这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
+			method: 'POST', //laui 修改请求方式
+			where: {
+				"token": sessionStorage.getItem("login_token"),
+				"page": currentPageNo, //页码的参数名称，默认：page
+				"limit": pageSize //每页数据量的参数名，默认：limit
+			},
+			response: {
+				statusName: 'code', //数据状态的字段名称，默认：code
+				countName: 'totalCount', //数据总数的字段名称，默认：count
+				dataName: 'pageList' //默数据列表的字段名称，认：data        //我返回的datas集合
+			},
+			page: true, //开启分页
+			limits: [10],
+			limit: 10,
+			toolbar: '#toolbarDemo',
+			cols: [
+				[ //表头
+					{
+						field: 'id',
+						//											width: 200,
+						title: '序号',
+						sort: true,
+						templet:'#zizeng'
+					}, {
+					field: 'title',
+					//											width: 200,
+					title: '视频标题'
+				}, {
+					field: 'url',
+					//											width: 200,
+					title: '视频地址',
+					// templet:'<div><img src="{{ d.img}}"  width="100%"></div>'
+				},{
+					field: 'createTime',
+					//											width: 80,
+					title: '创建时间',
+					sort: true
+				}, {
+					fixed: 'right',
+					width: 165,
+					align: 'center',
+					toolbar: '#barDemo'
+				}
+				]
+			]
+		});
+		//监听工具条
+		table.on('tool(demo)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			var data = obj.data, //获得当前行数据
+					layEvent = obj.event; //获得 lay-event 对应的值
+			if(layEvent === 'detail') {
+				layer.msg('查看操作');
+			} else if(layEvent === 'del') {
+				layer.confirm('真的删除行么', function(index) {
+					delVideo(data.id);
+					// obj.del(); //删除对应行（tr）的DOM结构
+					layer.close(index);
+					//向服务端发送删除指令
 				});
-				//监听工具条
-				table.on('tool(demo)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-					var data = obj.data, //获得当前行数据
-						layEvent = obj.event; //获得 lay-event 对应的值
-					if(layEvent === 'detail') {
-						layer.msg('查看操作');
-					} else if(layEvent === 'del') {
-						layer.confirm('真的删除行么', function(index) {
-							obj.del(); //删除对应行（tr）的DOM结构
-							layer.close(index);
-							//向服务端发送删除指令
-						});
-					} else if(layEvent === 'edit') {
-						layer.msg('编辑操作');
-					}
-				});
+			} else if(layEvent === 'edit') {
+				editVideo(data.id);
+			}
+		});
+
+		//头工具栏事件
+		table.on('toolbar(demo)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			//				var data = obj.data, //获得当前行数据
+			layEvent = obj.event; //获得 lay-event 对应的值
+			if(layEvent === 'addVideo') {
+				addVideoOpen();
+			}
+		});
+
+		//编辑产品信息
+		function editVideo(id) {
+			layer.open({
+				type: 1,
+				title: "查看视频",
+				area: ['800px', '500px'], //弹框大小
+				offset: 't', //垂直水平居中
+				content: $("#video_edit"), //这里content是form表单
+				btn: ['保存', '取消'], //可以无限个按钮
+				yes: function(index, layero) {
+					//按钮【按钮一】的回调
+					saveVideo(id);
+				},
+				btn2: function(index, layero) {
+					//按钮【按钮二】的回调
+					layuiClose();
+				},
+				success: function(layero, index) {
+					$.ajax({
+						type: "post",
+						url: baseIP + "/manage/video/detail",
+						//							url: "../json/videoDetail.json",
+						async: false,
+						data: {
+							"id": id
+						},
+						dataType: "json",
+						success: function(data) {
+							console.log(data);
+							$("#video_title_edit").val(data.video.title);
+							// $("#upload_img_edit").prev("img").attr("src", data.video.img);
+							$("#video_img_edit_src").val(data.video.url);
+							$("#video_content_edit").text(data.video.content);
+
+							$("#video_edit >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+							$.each(data.video.details, function(i, item) {
+								$("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label">产品功能</label><div class="layui-input-block"><input type="text" function-id="'+item.id+'" value="' + item.functionName + '"   autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">功能描述</label><div class="layui-input-block"><textarea    class="layui-textarea">' + item.functionDesc + '</textarea></div></div>');
+							});
+							$("#video_edit >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label"><button class="layui-btn layui-btn-sm" id="edit_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+						}
+					});
+				}
 			});
-		</script>
+		}
 
-	</body>
+
+		//保存修改视频信息
+		function saveVideo(id) {
+			var videoInput = $("#video_edit >.layui-form >.layui-form-item input");
+			var videoObject = new Object();
+			//产品id
+			videoObject.id = id;
+			//视频标题
+			videoObject.title = videoInput[0].value;
+			//视频图片ID
+			videoObject.fileId = videoInput[1].getAttribute("file-id");
+			//视频图片
+			videoObject.url = videoInput[1].value;
+			console.log(JSON.stringify(videoObject))
+			$.ajax({
+				type: "post",
+				url: baseIP + "/manage/video/edit",
+				data: videoObject,
+				dataType: "JSON",
+				async: true,
+				success: function(data) {
+					if(data.code == 0) {
+						layer.msg('修改视频成功');
+						reloadTable();
+					} else {
+						layer.msg('修改视频失败');
+					}
+				}
+			});
+		}
+
+
+		//添加视频信息
+		function addVideoOpen() {
+			layer.open({
+				type: 1,
+				title: "添加视频",
+				area: ['800px', '500px'], //弹框大小
+				offset: 't', //垂直水平居中
+				content: $("#video_add"), //这里content是form表单
+				btn: ['保存', '取消'], //可以无限个按钮
+				yes: function(index, layero) {
+					//按钮【按钮一】的回调
+					addVideo();
+				},
+				btn2: function(index, layero) {
+					//按钮【按钮二】的回调
+					layuiClose();
+				},
+				success: function(layero, index) {
+					$("#product_add >.layui-form").find(".layui-form-item").eq(4).nextAll().remove(); //先清空动态数据
+					$("#product_add >.layui-form").append('<div class="layui-form-item"><label class="layui-form-label" ><button class="layui-btn layui-btn-sm" id="add_item"><i class="layui-icon">&#xe654;</i></button></label></div>');
+				}
+			});
+		}
+
+		//保存新添加的产品信息
+		function addVideo() {
+			var videoInput = $("#video_add >.layui-form >.layui-form-item input");
+			var videoObject = new Object();
+			//视频标题
+			videoObject.title = videoInput[0].value;
+			//视频图片ID
+			videoObject.fileId = videoInput[1].getAttribute("file-id");
+			//视频图片
+			videoObject.url = videoInput[1].value;
+			console.log(JSON.stringify(videoObject))
+			$.ajax({
+				type: "post",
+				url: baseIP + "/manage/video/add",
+				data: videoObject,
+				dataType: "JSON",
+				async: true,
+				success: function(data) {
+					if(data.code == 0) {
+						layer.msg('添加视频成功');
+						reloadTable();
+					} else {
+						layer.msg('添加视频失败');
+					}
+				}
+			});
+		}
+
+		//删除产品信息
+		function delVideo(id) {
+			$.ajax({
+				type: "delete",
+				url: baseIP + "/manage/video",
+				async: false,
+				data: {
+					"id": id
+				},
+				dataType: "json",
+				success: function(data) {
+					if(data.code == 0) {
+						layer.msg('删除成功');
+						reloadTable();
+					} else {
+						layer.msg('删除失败');
+					}
+				}
+			});
+		}
+
+		//关闭layui弹窗
+		function layuiClose() {
+			layer.close(index);
+		}
+
+		//执行实例	添加
+		var uploadInst = upload.render({
+			elem: '#upload_img_add', //绑定元素
+			url: baseIP + '/manage/upload', //上传接口
+			done: function(res){
+				//上传完毕回调
+				console.log(res);
+				var img_id = res.tempFile.id;
+				var img_src = res.tempFile.filePath;
+				$("#upload_img_add").prev("img").attr("src",img_src);
+				$("#upload_img_add").prev().prev("input").val(img_src);
+				$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+			},
+			error: function(e){
+				//请求异常回调
+				console.log(e);
+			}
+		});
+		//执行实例	编辑
+		var uploadInst = upload.render({
+			elem: '#upload_img_edit', //绑定元素
+			url: baseIP + '/manage/upload', //上传接口
+			done: function(res){
+				//上传完毕回调
+				console.log(res);
+				var img_id = res.tempFile.id;
+				var img_src = res.tempFile.filePath;
+				$("#upload_img_add").prev("img").attr("src",img_src);
+				$("#upload_img_edit").prev().prev("input").val(img_src);
+				$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+			},
+			error: function(e){
+				//请求异常回调
+				console.log(e);
+			}
+		});
+
+		//刷新表单
+		function reloadTable(){
+			window.location.reload();
+		}
+
+	});
+
+
+</script>
+
 
 </html>
