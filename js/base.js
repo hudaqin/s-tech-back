@@ -10,6 +10,12 @@ window.onload=function(){
     if(domain[domain.length-1]!="login.html"){
         panduan();
     }
+    // document.addEventListener("ajaxStart",function () {
+    //     $('#loadImg').show();
+    // });
+    // document.addEventListener("ajaxStop",function () {
+    //     $('#loadImg').hide();
+    // })
 }
 
 function panduan() {
