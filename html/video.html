@@ -64,7 +64,7 @@
 			<label class="layui-form-label">视频图片</label>
 			<div class="layui-input-block">
 				<input type="text" id="video_img_add_src" name="video_img" readonly autocomplete="off" class="layui-input">
-				<img  style="width: 200px;height: 200px;"  src="" hidden="hidden"/>
+				<img  style="width: 200px;height: 200px;display: none"  src="" />
 				<button type="button" class="layui-btn " id="upload_img_add">
 					<i class="layui-icon">&#xe67c;</i>上传视频文件
 				</button>
@@ -97,9 +97,8 @@
 		currentPageNo = $(".layui-laypage-curr").next("em").next("em").val();
 		//执行一个 table 实例
 		table.render({
-			elem: '#video_list',
-			//					height: 532,
-			url: baseIP + '/manage/video/list', //					这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
+			elem: '#video_list',//height: 532,
+			url: baseIP + '/manage/video/list', //这里的url是自己写的一个js 引入js到这个页面就行例：var URL = "http://192.168.0.106:8080/website";
 			method: 'POST', //laui 修改请求方式
 			where: {
 				"token": sessionStorage.getItem("login_token"),
@@ -332,13 +331,14 @@
 		var uploadInst = upload.render({
 			elem: '#upload_img_add', //绑定元素
 			url: baseIP + '/manage/upload', //上传接口
+			accept: 'video', //视频
 			done: function(res){
 				//上传完毕回调
 				console.log(res);
 				var img_id = res.tempFile.id;
 				var img_src = res.tempFile.filePath;
-				$("#upload_img_add").prev("img").attr("src",img_src);
-				$("#upload_img_add").prev().prev("input").val(img_src);
+				// $("#upload_img_add").prev("img").attr("src",img_src);
+				$("#video_img_add_src").val(img_src);
 				$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
 			},
 			error: function(e){
@@ -350,20 +350,23 @@
 		var uploadInst = upload.render({
 			elem: '#upload_img_edit', //绑定元素
 			url: baseIP + '/manage/upload', //上传接口
+			accept: 'video', //视频
 			done: function(res){
 				//上传完毕回调
 				console.log(res);
 				var img_id = res.tempFile.id;
 				var img_src = res.tempFile.filePath;
-				$("#upload_img_add").prev("img").attr("src",img_src);
-				$("#upload_img_edit").prev().prev("input").val(img_src);
-				$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+				// $("#upload_img_add").prev("img").attr("src",img_src);
+				$("#video_img_edit_src").val(img_src);
+				// $("#upload_img_add").prev().prev("input").attr("file-id",img_id);
 			},
 			error: function(e){
 				//请求异常回调
 				console.log(e);
 			}
 		});
+
+
 
 		//刷新表单
 		function reloadTable(){

@@ -549,13 +549,14 @@
 			    elem: '#upload_img_edit', //绑定元素
 			    url: baseIP + '/manage/upload', //上传接口
 				done: function(res){
+					$("#upload_img_add").prev().prev("input").val("");
 				  	//上传完毕回调
 				  	console.log(res);
 				  	var img_id = res.tempFile.id;
 				  	var img_src = res.tempFile.filePath;
-				  	$("#upload_img_add").prev("img").attr("src",img_src);
+				  	$("#upload_img_edit").prev("img").attr("src",img_src);
 				  	$("#upload_img_edit").prev().prev("input").val(img_src);
-				  	$("#upload_img_add").prev().prev("input").attr("file-id",img_id);
+				  	$("#upload_img_edit").prev().prev("input").attr("file-id",img_id);
 				},
 				error: function(e){
 			  		//请求异常回调
